@@ -73,8 +73,8 @@ int main(int argc, char* argv[])
     std::cout << "  " << cpb << " cycles per byte (cpb)" << std::endl;
     std::cout << "  " << mbs << " MiB per second (MiB)" << std::endl;
 
-    std::cout << "  " << elapsedTimeInSeconds << " seconds passed" << std::endl;
-    std::cout << "  " << (word64) bytes << " bytes processed" << std::endl;
+    //std::cout << "  " << elapsedTimeInSeconds << " seconds passed" << std::endl;
+    //std::cout << "  " << (word64) bytes << " bytes processed" << std::endl;
 
     i = 0; blocks = 1;
     timer.StartTimer();
@@ -89,16 +89,16 @@ int main(int argc, char* argv[])
 
     const double bytes1 = static_cast<double>(BUF_SIZE) * blocks;
     const double ghz1 = cpuFreq / 1000 / 1000 / 1000;
-    const double mbs1 = bytes / elapsedTimeInSeconds / 1024 / 1024;
-    const double cpb1 = elapsedTimeInSeconds * cpuFreq / bytes;
+    const double mbs1 = bytes1 / elapsedTimeInSeconds / 1024 / 1024;
+    const double cpb1 = elapsedTimeInSeconds * cpuFreq / bytes1;
 
     std::cout << des_cipher.AlgorithmName() << " benchmarks..." << std::endl;
     std::cout << "  " << ghz1 << " GHz cpu frequency" << std::endl;
     std::cout << "  " << cpb1 << " cycles per byte (cpb)" << std::endl;
     std::cout << "  " << mbs1 << " MiB per second (MiB)" << std::endl;
 
-    std::cout << "  " << elapsedTimeInSeconds << " seconds passed" << std::endl;
-    std::cout << "  " << (word64)bytes1 << " bytes processed" << std::endl;
+   // std::cout << "  " << elapsedTimeInSeconds << " seconds passed" << std::endl;
+    //std::cout << "  " << (word64)bytes1 << " bytes processed" << std::endl;
 
     if ((cpb < cpb1) && (mbs > mbs1))
         std::cout << "AES is faster";
