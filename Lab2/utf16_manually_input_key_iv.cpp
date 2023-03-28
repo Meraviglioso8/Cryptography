@@ -82,10 +82,10 @@ int main(int argc, char* argv[])
 	//input manually plaintext 
 	_setmode(_fileno(stdin), _O_U16TEXT); 
 	std::cout<<"Input: ";
-        std::wstring str ;
-        std::getline(std::wcin, str);
+    std::wstring str ;
+    std::getline(std::wcin, str);
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
-        std::string plain = convert.to_bytes(str);
+    std::string plain = convert.to_bytes(str);
 
 	string cipher, encoded, recovered;
 
