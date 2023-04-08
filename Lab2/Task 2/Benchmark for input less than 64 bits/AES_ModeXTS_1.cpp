@@ -25,6 +25,15 @@ int main(int argc, char* argv[])
     SecByteBlock key(64); // Use a 64-byte key for XTS mode
     prng.GenerateBlock(key, key.size());
 
+    XTS_Mode< AES >::Encryption encryption;
+    encryption.SetKeyWithIV(key, key.size() / 2, key + key.size() / 2);
+    
+    XTS_Mode< AES >::Decryption decryption;
+    decryption.SetKeyWithIV(key, key.size() / 2, key + key.size() / 2);
+
+    const int BUF_SIZE = RoundUpToMultipleOf(2048U,
+        dynamic_cast<StreamTransformation&>(encryption).OptimalBlockSize());
+
     AlignedSecByteBlock buf(BUF_SIZE);
     prng.GenerateBlock(buf, buf.size());
 
@@ -36,11 +45,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        XTS_Mode< AES >::Encryption encryption;
-        encryption.SetKeyWithIV(key, key.size() / 2, key + key.size() / 2);
-
-        const int BUF_SIZE = RoundUpToMultipleOf(2048U,
-            dynamic_cast<StreamTransformation&>(cipher).OptimalBlockSize());
+        
         do
         {
             blocks *= 2;
@@ -65,11 +70,8 @@ int main(int argc, char* argv[])
 
     try
     {
-        XTS_Mode< AES >::Decryption decryption;
-        decryption.SetKeyWithIV(key, key.size() / 2, key + key.size() / 2);
+        
 
-        const int BUF_SIZE = RoundUpToMultipleOf(2048U,
-            dynamic_cast<StreamTransformation&>(cipher).OptimalBlockSize());
         do
         {
             blocks *= 2;
