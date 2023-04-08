@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     /*******************************************************************/
     /************************INPUT STRING HERE**************************/
     
-    std::wstring utf16String = L"Xin chào";
+    std::wstring utf16String = L"MMH khó quá huhu";
     SecByteBlock utf8Block(converter.to_bytes(utf16String).size());
     std::memcpy(utf8Block, converter.to_bytes(utf16String).c_str(), utf8Block.size());
 

@@ -20,7 +20,7 @@ const double cpuFreq = 2.7 * 1000 * 1000 * 1000;
 
 int main(int argc, char* argv[])
 {
-    std::setlocale(LC_ALL, "vi_VN.UTF-16");
+    std::setlocale(LC_ALL, "vi_VN.UTF-8");
 
     using namespace CryptoPP;
     AutoSeededRandomPool prng;
