@@ -31,10 +31,10 @@ using CryptoPP::StreamTransformationFilter;
 #include "aes.h"
 using CryptoPP::AES;
 
-#include "ccm.h"
-using CryptoPP::CBC_Mode;
-
 #include "assert.h"
+
+#include "modes.h"
+using CryptoPP::ECB_Mode;
 
 #include <codecvt>
 #include <io.h>
@@ -43,54 +43,23 @@ using CryptoPP::CBC_Mode;
 #include <locale>
 #include <string>
 
-using CryptoPP::SecByteBlock;
-
 int main(int argc, char* argv[])
 {
 	AutoSeededRandomPool prng;
 
-	//input manually key value
-	std::string inKey;
-	std::cout<<"Input your key value: ";
-	std::getline(std::cin, inKey);
-	byte key[AES::BLOCKSIZE];
-    // Iterate over characters in string,
-    // convert them to byte and copy to byte array
-        std::transform(
-       	inKey.begin(),
-        inKey.end(),
-        key,
-        [](const char& ch) {
-            return CryptoPP::byte(ch);
-        });
+	byte key[AES::DEFAULT_KEYLENGTH];
+	prng.GenerateBlock(key, sizeof(key));
 
-	//input manually iv value
-	std::string inIV;
-	std::cout<<"Input your iv value: ";
-	std::getline(std::cin, inIV);
 	byte iv[AES::BLOCKSIZE];
-    // Iterate over characters in string,
-    // convert them to byte and copy to byte array
-        std::transform(
-       	inIV.begin(),
-        inIV.end(),
-        iv,
-        [](const char& ch) {
-            return CryptoPP::byte(ch);
-        });
+	prng.GenerateBlock(iv, sizeof(iv));
 
-	//input manually plaintext 
 	_setmode(_fileno(stdin), _O_U16TEXT); 
 	std::cout<<"Input: ";
     std::wstring str ;
     std::getline(std::wcin, str);
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
     std::string plain = convert.to_bytes(str);
-
 	string cipher, encoded, recovered;
-
-	//std::cout<<"key length: "<<AES::DEFAULT_KEYLENGTH<<endl;
-	//std::cout<<"block size: "<<AES::BLOCKSIZE<<endl;
 
 	/*********************************\
 	\*********************************/
@@ -105,13 +74,13 @@ int main(int argc, char* argv[])
 	cout << "key: " << encoded << endl;
 
 	// Pretty print iv
-	encoded.clear();
-	StringSource(iv, sizeof(iv), true,
-		new HexEncoder(
-			new StringSink(encoded)
-		) // HexEncoder
-	); // StringSource
-	cout << "iv: " << encoded << endl;
+	// encoded.clear();
+	// StringSource(iv, sizeof(iv), true,
+	// 	new HexEncoder(
+	// 		new StringSink(encoded)
+	// 	) // HexEncoder
+	// ); // StringSource
+	// cout << "iv: " << encoded << endl;
 
 	/*********************************\
 	\*********************************/
@@ -120,8 +89,8 @@ int main(int argc, char* argv[])
 	{
 		cout << "plain text: " << plain << endl;
 
-		CBC_Mode< AES >::Encryption e;
-		e.SetKeyWithIV(key, sizeof(key), iv);
+		ECB_Mode< AES >::Encryption e;
+		e.SetKey(key, sizeof(key));
 
 		// The StreamTransformationFilter removes
 		//  padding as required.
@@ -164,8 +133,8 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		CBC_Mode< AES >::Decryption d;
-		d.SetKeyWithIV(key, sizeof(key), iv);
+		ECB_Mode< AES >::Decryption d;
+		d.SetKey(key, sizeof(key));
 
 		// The StreamTransformationFilter removes
 		//  padding as required.
