@@ -10,6 +10,8 @@ using std::endl;
 #include <string>
 using std::string;
 
+#include <filesystem>
+
 #include <cstdlib>
 using std::exit;
 
@@ -75,16 +77,14 @@ int main(int argc, char* argv[])
     SecByteBlock key(16);
     prng.GenerateBlock(key, key.size());
 
-    const int BUF_SIZE = 8;
-
-
-    SecByteBlock iv(AES::BLOCKSIZE);
-    prng.GenerateBlock(iv, iv.size());
-
-
     //1MB input
+    std::string filePath(__FILE__);
+    std::filesystem::path dirPath = std::filesystem::path(filePath).parent_path();
+    std::string textFilePath = dirPath.string() + "/text.txt";
+    std::wstring wFilePath = convert.from_bytes(filePath);
+
     string plain;
-	plain = InputFromFile(L"text.txt");
+	plain = InputFromFile(wFilePath);
 
     SecByteBlock utf8Block(plain.size());
     std::memcpy(utf8Block, plain.c_str(), utf8Block.size());
@@ -94,14 +94,14 @@ int main(int argc, char* argv[])
 
     // Encrypt the plaintext
     ECB_Mode< AES >::Encryption encryption;
-    encryption.SetKeyWithIV(key, key.size(), iv);
+    encryption.SetKey(key, key.size());
 
     AlignedSecByteBlock ciphertext(buf.size());
     encryption.ProcessData(ciphertext, buf, buf.size());
 
     // Decrypt the ciphertext
     ECB_Mode< AES >::Decryption decryption;
-    decryption.SetKeyWithIV(key, key.size(), iv);
+    decryption.SetKey(key, key.size());
 
     AlignedSecByteBlock recoveredtext(buf.size());
     decryption.ProcessData(recoveredtext, ciphertext, ciphertext.size());

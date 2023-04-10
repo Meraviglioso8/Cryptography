@@ -6,6 +6,7 @@
 #include "aes.h"
 #include <iostream>
 #include <string>
+#include <locale>
 #include <codecvt>
 #include <hex.h>
 #include <files.h>

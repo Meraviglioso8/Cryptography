@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
         const double mbs = bytes / elapsedTimeInSeconds / 1024 / 1024;
         const double cpb = elapsedTimeInSeconds * cpuFreq / bytes;
 
-        std::cout << encryption.AlgorithmName() << " ecryption benchmarks..." << std::endl;
+        std::cout << encryption.AlgorithmName() << " encryption benchmarks..." << std::endl;
         std::cout << "  " << ghz << " GHz cpu frequency" << std::endl;
         std::cout << "  " << cpb << " cycles per byte (cpb)" << std::endl;
         std::cout << "  " << mbs << " MiB per second (MiB)" << std::endl;

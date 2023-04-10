@@ -10,6 +10,8 @@ using std::endl;
 #include <string>
 using std::string;
 
+#include <filesystem>
+
 #include <cstdlib>
 using std::exit;
 
@@ -70,7 +72,7 @@ int main(int argc, char* argv[])
     using namespace CryptoPP;
     AutoSeededRandomPool prng;
 
-
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert; 
 
     SecByteBlock key(AES::DEFAULT_KEYLENGTH);
     prng.GenerateBlock(key, key.size());
@@ -81,8 +83,13 @@ int main(int argc, char* argv[])
 
 
     //1MB input
+    std::string filePath(__FILE__);
+    std::filesystem::path dirPath = std::filesystem::path(filePath).parent_path();
+    std::string textFilePath = dirPath.string() + "/text.txt";
+    std::wstring wFilePath = convert.from_bytes(filePath);
+
     string plain;
-	plain = InputFromFile(L"text.txt");
+	plain = InputFromFile(wFilePath);
 
     SecByteBlock utf8Block(plain.size());
     std::memcpy(utf8Block, plain.c_str(), utf8Block.size());
