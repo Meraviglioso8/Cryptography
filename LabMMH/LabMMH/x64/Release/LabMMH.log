@@ -1,7 +1,0 @@
-﻿  Cau3.cpp
-C:\Users\gohan\OneDrive\Documents\GitHub\Cryptography\Lab3\Cau3.cpp(69,21): error C3861: 'ModularArithmetic': identifier not found
-C:\Users\gohan\OneDrive\Documents\GitHub\Cryptography\Lab3\Cau3.cpp(76,19): error C2661: 'CryptoPP::InvertibleRSAFunction::Initialize': no overloaded function takes 5 arguments
-C:\Users\gohan\OneDrive\Documents\GitHub\Cryptography\Lab3\Cau3.cpp(76,19): message : while trying to match the argument list '(CryptoPP::Integer, CryptoPP::Integer, CryptoPP::Integer, CryptoPP::Integer, CryptoPP::Integer)'
-C:\Users\gohan\OneDrive\Documents\GitHub\Cryptography\Lab3\Cau3.cpp(88,47): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\gohan\OneDrive\Documents\GitHub\Cryptography\Lab3\Cau3.cpp(107,28): error C2065: 'rng': undeclared identifier
-C:\Users\gohan\OneDrive\Documents\GitHub\Cryptography\Lab3\Cau3.cpp(131,52): error C2065: 'rng': undeclared identifier
