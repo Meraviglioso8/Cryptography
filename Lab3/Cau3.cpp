@@ -41,6 +41,10 @@ using std::endl;
 
 using CryptoPP::byte;
 
+#include <integer.h>
+using CryptoPP::Integer;
+
+
 int main(int argc, char* argv[])
 {
     try
@@ -50,47 +54,81 @@ int main(int argc, char* argv[])
         AutoSeededRandomPool rng;
 
         InvertibleRSAFunction parameters;
-        parameters.GenerateRandomWithKeySize( rng, 1024 );
+        parameters.GenerateRandomWithKeySize(rng, 1024);
 
-        RSA::PrivateKey privateKey( parameters );
-        RSA::PublicKey publicKey( privateKey );
+        //RSA::PrivateKey privateKey(parameters);
+        //RSA::PublicKey publicKey(parameters);
 
-        ////////////////////////////////////////////////
-        // Secret to protect
-        // static const int SECRET_SIZE = 16;
-        //SecByteBlock plaintext( SECRET_SIZE );
+        // Write keys to file
+        /*{
+            FileSink output("D:/RSA/privateKey.txt");
+            privateKey.DEREncode(output);
+        }
+        {
+            FileSink output("D:/RSA/publicKey.txt");
+            publicKey.DEREncode(output);
+        }*/
 
-        // Input plaintext
-        string myPlaintext = "RSA Encryption Schemes";
+        RSA::PrivateKey privateKey;
+        RSA::PublicKey publicKey;
+        {
+            FileSource input("D:/RSA/privateKey.txt", true);
+            privateKey.BERDecode(input);
+        }
+        {
+            FileSource input("D:/RSA/publicKey.txt", true);
+            publicKey.BERDecode(input);
+        }
 
-        int SECRET_SIZE = myPlaintext.length();
-        SecByteBlock plaintext((const byte*)myPlaintext.data(), myPlaintext.size());
-        //memcpy(plaintext, myPlaintext.c_str(), SECRET_SIZE);
-        //memset( plaintext, 'A', SECRET_SIZE );
+        //////////////////////////////////////////////////
+        //// Secret to protect
+        //// static const int SECRET_SIZE = 16;
+        ////SecByteBlock plaintext( SECRET_SIZE );
 
-        ////////////////////////////////////////////////
-        // Encrypt
-        RSAES_OAEP_SHA_Encryptor encryptor( publicKey );
+        //// Input plaintext
+        //string myPlaintext = "RSA Encryption Schemes";
 
-        // Now that there is a concrete object, we can validate
-        assert( 0 != encryptor.FixedMaxPlaintextLength() );
-        assert( SECRET_SIZE <= encryptor.FixedMaxPlaintextLength() );        
+        //int SECRET_SIZE = myPlaintext.length();
+        //SecByteBlock plaintext((const byte*)myPlaintext.data(), myPlaintext.size());
+        ////memcpy(plaintext, myPlaintext.c_str(), SECRET_SIZE);
+        ////memset( plaintext, 'A', SECRET_SIZE );
 
-        // Create cipher text space
-        size_t ecl = encryptor.CiphertextLength( plaintext.size() );
-        assert( 0 != ecl );
-        SecByteBlock ciphertext( ecl );
+        //////////////////////////////////////////////////
+        //// Encrypt
+        //RSAES_OAEP_SHA_Encryptor encryptor( publicKey );
 
-        // Paydirt
-        encryptor.Encrypt( rng, plaintext, plaintext.size(), ciphertext );
-        
-        /***********************Show the cipher text***********************/
-        
-        // Convert cipher text to string
-        string cipherText((const char*)ciphertext.data(), ciphertext.size());
+        //// Now that there is a concrete object, we can validate
+        //assert( 0 != encryptor.FixedMaxPlaintextLength() );
+        //assert( SECRET_SIZE <= encryptor.FixedMaxPlaintextLength() );        
 
-        // Print cipher text to console
-        cout << "Cipher text: " << cipherText << endl;
+        //// Create cipher text space
+        //size_t ecl = encryptor.CiphertextLength( plaintext.size() );
+        //assert( 0 != ecl );
+        //SecByteBlock ciphertext( ecl );
+
+        //// Paydirt
+        //encryptor.Encrypt( rng, plaintext, plaintext.size(), ciphertext );
+        //
+        ///***********************Show the cipher text***********************/
+        //
+        //// Convert cipher text to string
+        //string cipherText((const char*)ciphertext.data(), ciphertext.size());
+
+        //// Print cipher text to console
+        //cout << "Cipher text: " << cipherText << endl;
+        std::string cipherText;
+        std::ifstream readfile("D:/RSA/cipherText.text");//reading from the file
+        if (readfile.is_open())
+        {
+            while (getline(readfile, cipherText))
+            {
+
+                std::cout << cipherText << '\n';
+            }
+        }
+        readfile.close();
+
+        SecByteBlock ciphertext((const byte*)cipherText.data(), cipherText.size());
 
         ////////////////////////////////////////////////
         // DECRYPT
@@ -124,11 +162,6 @@ int main(int argc, char* argv[])
         // Compare recovered to original
         string recoveredText((const char*)recovered.data(), recovered.size());
         cout << "Recovered plain text: " << recoveredText << endl;
-
-        if (myPlaintext == recoveredText)
-            cout << "Decryption succeeded" << endl;
-        else
-            cout << "Decryption failed" << endl;
     }
     catch( CryptoPP::Exception& e )
     {
