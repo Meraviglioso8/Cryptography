@@ -56,20 +56,20 @@ int main(int argc, char* argv[])
         InvertibleRSAFunction parameters;
         parameters.GenerateRandomWithKeySize(rng, 1024);
 
-        //RSA::PrivateKey privateKey(parameters);
-        //RSA::PublicKey publicKey(parameters);
+        RSA::PrivateKey privateKey(parameters);
+        RSA::PublicKey publicKey(parameters);
 
         // Write keys to file
-        /*{
+        {
             FileSink output("D:/RSA/privateKey.txt");
             privateKey.DEREncode(output);
         }
         {
             FileSink output("D:/RSA/publicKey.txt");
             publicKey.DEREncode(output);
-        }*/
+        }
 
-        RSA::PrivateKey privateKey;
+        /*RSA::PrivateKey privateKey;
         RSA::PublicKey publicKey;
         {
             FileSource input("D:/RSA/privateKey.txt", true);
@@ -78,57 +78,61 @@ int main(int argc, char* argv[])
         {
             FileSource input("D:/RSA/publicKey.txt", true);
             publicKey.BERDecode(input);
-        }
+        }*/
 
-        //////////////////////////////////////////////////
-        //// Secret to protect
-        //// static const int SECRET_SIZE = 16;
-        ////SecByteBlock plaintext( SECRET_SIZE );
+        ////////////////////////////////////////////////
+        // Secret to protect
+        // static const int SECRET_SIZE = 16;
+        //SecByteBlock plaintext( SECRET_SIZE );
 
-        //// Input plaintext
-        //string myPlaintext = "RSA Encryption Schemes";
+        // Input plaintext
+        string myPlaintext = "RSA Encryption Schemes";
 
-        //int SECRET_SIZE = myPlaintext.length();
-        //SecByteBlock plaintext((const byte*)myPlaintext.data(), myPlaintext.size());
-        ////memcpy(plaintext, myPlaintext.c_str(), SECRET_SIZE);
-        ////memset( plaintext, 'A', SECRET_SIZE );
+        int SECRET_SIZE = myPlaintext.length();
+        SecByteBlock plaintext((const byte*)myPlaintext.data(), myPlaintext.size());
+        //memcpy(plaintext, myPlaintext.c_str(), SECRET_SIZE);
+        //memset( plaintext, 'A', SECRET_SIZE );
 
-        //////////////////////////////////////////////////
-        //// Encrypt
-        //RSAES_OAEP_SHA_Encryptor encryptor( publicKey );
+        ////////////////////////////////////////////////
+        // Encrypt
+        RSAES_OAEP_SHA_Encryptor encryptor( publicKey );
 
-        //// Now that there is a concrete object, we can validate
-        //assert( 0 != encryptor.FixedMaxPlaintextLength() );
-        //assert( SECRET_SIZE <= encryptor.FixedMaxPlaintextLength() );        
+        // Now that there is a concrete object, we can validate
+        assert( 0 != encryptor.FixedMaxPlaintextLength() );
+        assert( SECRET_SIZE <= encryptor.FixedMaxPlaintextLength() );        
 
-        //// Create cipher text space
-        //size_t ecl = encryptor.CiphertextLength( plaintext.size() );
-        //assert( 0 != ecl );
-        //SecByteBlock ciphertext( ecl );
+        // Create cipher text space
+        size_t ecl = encryptor.CiphertextLength( plaintext.size() );
+        assert( 0 != ecl );
+        SecByteBlock ciphertext( ecl );
 
-        //// Paydirt
-        //encryptor.Encrypt( rng, plaintext, plaintext.size(), ciphertext );
-        //
-        ///***********************Show the cipher text***********************/
-        //
-        //// Convert cipher text to string
-        //string cipherText((const char*)ciphertext.data(), ciphertext.size());
+        // Paydirt
+        encryptor.Encrypt( rng, plaintext, plaintext.size(), ciphertext );
+        
+        /***********************Show the cipher text***********************/
+        
+        // Convert cipher text to string
+        std::wstring cipherText((const char*)ciphertext.data(), ciphertext.size());
 
-        //// Print cipher text to console
-        //cout << "Cipher text: " << cipherText << endl;
-        std::string cipherText;
-        std::ifstream readfile("D:/RSA/cipherText.text");//reading from the file
-        if (readfile.is_open())
-        {
-            while (getline(readfile, cipherText))
-            {
+        // Print cipher text to console
+        std::wcout << "Cipher text: " << cipherText << endl;
 
-                std::cout << cipherText << '\n';
-            }
-        }
-        readfile.close();
+        std::wofstream encFile("D:/RSA/cipherText.txt");
+        encFile << cipherText;
+        
+        //std::wstring cipherText;
+        //std::wifstream readfile("D:/RSA/cipherText.txt");//reading from the file
+        //if (readfile.is_open())
+        //{
+        //    while (getline(readfile, cipherText))
+        //    {
 
-        SecByteBlock ciphertext((const byte*)cipherText.data(), cipherText.size());
+        //        std::wcout << cipherText << '\n';
+        //    }
+        //}
+        //readfile.close();
+
+        //SecByteBlock ciphertext((const byte*)cipherText.data(), cipherText.size());
 
         ////////////////////////////////////////////////
         // DECRYPT
