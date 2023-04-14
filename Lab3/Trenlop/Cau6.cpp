@@ -87,11 +87,11 @@ int main(int argc, char* argv[])
 
         parameters.GenerateRandomWithKeySize(rng, 15360);
 
-        RSA::PrivateKey privateKey(parameters);
-        RSA::PublicKey publicKey(parameters);
+        //RSA::PrivateKey privateKey(parameters);
+        //RSA::PublicKey publicKey(parameters);
 
-        // Load private key from file
-        
+        // Load private key to file
+        /*
        {
             FileSink output("./privateKey6.txt");
             privateKey.DEREncode(output);
@@ -100,7 +100,18 @@ int main(int argc, char* argv[])
             FileSink output1("./publicKey6.txt");
             publicKey.DEREncode(output1);
         }
-        
+        */
+       //Load key from file
+        RSA::PrivateKey privateKey;
+        RSA::PublicKey publicKey;
+        {
+            FileSource input("D:/Crypto_Code/Lab02/Github/Cryptography/Lab3/Trenlop/privateKey6.txt",true);
+            privateKey.BERDecode(input);
+        }
+        {
+            FileSource input("D:/Crypto_Code/Lab02/Github/Cryptography/Lab3/Trenlop/publicKey6.txt", true);
+            publicKey.BERDecode(input);
+        }
         
 
         ////////////////////////////////////////////////
