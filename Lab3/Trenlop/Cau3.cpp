@@ -56,29 +56,31 @@ int main(int argc, char* argv[])
         InvertibleRSAFunction parameters;
         parameters.GenerateRandomWithKeySize(rng, 1024);
 
-        RSA::PrivateKey privateKey(parameters);
-        RSA::PublicKey publicKey(parameters);
+        //RSA::PrivateKey privateKey(parameters);
+        //RSA::PublicKey publicKey(parameters);
 
         // Write keys to file
+        /*
         {
-            FileSink output("D:/RSA/privateKey.txt");
+            FileSink output("./privateKey.txt");
             privateKey.DEREncode(output);
         }
         {
-            FileSink output("D:/RSA/publicKey.txt");
+            FileSink output("./publicKey.txt");
             publicKey.DEREncode(output);
         }
-
-        /*RSA::PrivateKey privateKey;
+        */
+        
+        RSA::PrivateKey privateKey;
         RSA::PublicKey publicKey;
         {
-            FileSource input("D:/RSA/privateKey.txt", true);
+            FileSource input("D:/Crypto_Code/Lab02/Github/Cryptography/Lab3/Trenlop/privateKey.txt",true);
             privateKey.BERDecode(input);
         }
         {
-            FileSource input("D:/RSA/publicKey.txt", true);
+            FileSource input("D:/Crypto_Code/Lab02/Github/Cryptography/Lab3/Trenlop/publicKey.txt", true);
             publicKey.BERDecode(input);
-        }*/
+        }
 
         ////////////////////////////////////////////////
         // Secret to protect
@@ -88,13 +90,14 @@ int main(int argc, char* argv[])
         // Input plaintext
         string myPlaintext = "RSA Encryption Schemes";
 
-        int SECRET_SIZE = myPlaintext.length();
+        //int SECRET_SIZE = myPlaintext.length();
         SecByteBlock plaintext((const byte*)myPlaintext.data(), myPlaintext.size());
         //memcpy(plaintext, myPlaintext.c_str(), SECRET_SIZE);
         //memset( plaintext, 'A', SECRET_SIZE );
 
         ////////////////////////////////////////////////
         // Encrypt
+        /*
         RSAES_OAEP_SHA_Encryptor encryptor( publicKey );
 
         // Now that there is a concrete object, we can validate
@@ -108,29 +111,30 @@ int main(int argc, char* argv[])
 
         // Paydirt
         encryptor.Encrypt( rng, plaintext, plaintext.size(), ciphertext );
+        */
         
         /***********************Show the cipher text***********************/
-        
+        /*
         // Convert cipher text to string
-        std::wstring cipherText((const char*)ciphertext.data(), ciphertext.size());
+        string cipherText((const char*)ciphertext.data(), ciphertext.size());
 
         // Print cipher text to console
-        std::wcout << "Cipher text: " << cipherText << endl;
+        std::cout << "Cipher text: " << cipherText << endl;
 
-        std::wofstream encFile("D:/RSA/cipherText.txt");
+        std::ofstream encFile("./cipherText.txt");
         encFile << cipherText;
-        
-        //std::wstring cipherText;
-        //std::wifstream readfile("D:/RSA/cipherText.txt");//reading from the file
-        //if (readfile.is_open())
-        //{
-        //    while (getline(readfile, cipherText))
-        //    {
-
-        //        std::wcout << cipherText << '\n';
-        //    }
-        //}
-        //readfile.close();
+        */
+        std::cout<<"Ciphertext read from file: "<<endl;
+        std::string cipherText;
+        std::ifstream readfile("D:/Crypto_Code/Lab02/Github/Cryptography/Lab3/Trenlop/cipherText.txt");//reading from the file
+        if (readfile.is_open())
+        {
+            while (getline(readfile, cipherText))
+            {
+                std::cout <<cipherText << '\n';
+          }
+        }
+        readfile.close();
 
         //SecByteBlock ciphertext((const byte*)cipherText.data(), cipherText.size());
 
@@ -140,21 +144,21 @@ int main(int argc, char* argv[])
 
         // Now that there is a concrete object, we can validate
         assert( 0 != decryptor.FixedCiphertextLength() );
-        assert( ciphertext.size() <= decryptor.FixedCiphertextLength() );        
+        assert( cipherText.size() <= decryptor.FixedCiphertextLength() );        
 
         // Create recovered text space
-        size_t dpl = decryptor.MaxPlaintextLength( ciphertext.size() );
+        size_t dpl = decryptor.MaxPlaintextLength( cipherText.size() );
         assert( 0 != dpl );
         SecByteBlock recovered( dpl );
 
         // Paydirt
         DecodingResult result = decryptor.Decrypt( rng,
-            ciphertext, ciphertext.size(), recovered );
+            (const byte*)cipherText.data(), cipherText.size(), recovered );
 
         // More sanity checks
         assert( result.isValidCoding );        
         assert( result.messageLength <=
-            decryptor.MaxPlaintextLength( ciphertext.size() ) );
+            decryptor.MaxPlaintextLength( cipherText.size() ) );
         assert( plaintext.size() == result.messageLength );
 
         // At this point, we can set the size of the recovered
