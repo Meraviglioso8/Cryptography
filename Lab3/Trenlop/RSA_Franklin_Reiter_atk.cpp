@@ -9,7 +9,6 @@
 
 #include "cryptlib.h"
 #include "integer.h"
-#include "algebra.h"
 #include "polynomi.h"
 #include "nbtheory.h"
 #include "modarith.h"
@@ -30,39 +29,24 @@ Integer gcd(Integer& a, Integer& b)
 
 std::string franklinreiter(const Integer& C1, const Integer& C2, const Integer& e, const Integer& N, const Integer& a, const Integer& b)
 {
-    typedef PolynomialOver<ModularArithmetic<Integer>> PolyRing;
-    PolyRing::Variable X;
+    // Define the polynomial ring
+    typedef PolynomialOver<ModularArithmetic> Polynomial;
+    ModularArithmetic modn(N);
+    const RingOfPolynomialsOver<ModularArithmetic> P(modn, 1, "X");
+    const Polynomial X(P, 1, 1); // X polynomial with coefficient type ModularArithmetic
 
-    ModularArithmetic<Integer> modn(N);
+    // Define the polynomials g1 and g2
+    const Polynomial g1 = (a*X + b).ModExp(e, P) - Polynomial(C1, P);
+    const Polynomial g2 = X.ModExp(e, P) - Polynomial(C2, P);
 
-    // Define the polynomials
-    PolyRing::Element g1 = PowerMod((a*X + b), e, modn) - C1;
-    PolyRing::Element g2 = PowerMod(X, e, modn) - C2;
+    // Compute the greatest common divisor of g1 and g2
+    Polynomial r, q;
+    Polynomial::Divide(r, q, g1, g2, P);
+    const Integer result = -q.GetCoefficient(0).ToInt();
 
-    // Compute the GCD of g1 and g2
-    PolyRing::Element gcd_poly = PolyRing::GCD(g1, g2).monic();
-
-    // Extract the coefficients of the GCD polynomial
-    std::vector<Integer> coeffs;
-    for (int i = 0; i <= gcd_poly.Degree(); i++) {
-        coeffs.push_back(gcd_poly.GetCoefficient(i));
-    }
-
-    // Compute the result as -a / lc
-    Integer result = (-coeffs[0] * a_inv_b_mod_c(1, N)).Modulo(N);
-
-    // Convert the result to a hexadecimal string and remove the trailing "L"
-    std::string hexstr = Integer(result).ToString(16);
-    if (hexstr.back() == 'L') {
-        hexstr.pop_back();
-    }
-
-    // Convert the hexadecimal string to a plaintext string and return it
-    std::string plaintext;
-    HexDecoder decoder(new StringSink(plaintext));
-    decoder.Put(reinterpret_cast<const byte*>(hexstr.data()), hexstr.size());
-    decoder.MessageEnd();
-    return plaintext;
+    // Convert the result to a hexadecimal string
+    const std::string hex_result = result.ToHexString();
+    return hex_result;
 }
 
 int main()
