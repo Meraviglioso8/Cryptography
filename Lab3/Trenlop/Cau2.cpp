@@ -38,76 +38,77 @@ int main(int argc, char* argv[])
         AutoSeededRandomPool rng;
 
         InvertibleRSAFunction parameters;
-        parameters.GenerateRandomWithKeySize( rng, 1024 );
+        parameters.GenerateRandomWithKeySize(rng, 1024);
 
-        RSA::PrivateKey privateKey( parameters );
-        RSA::PublicKey publicKey( parameters );
+        RSA::PrivateKey privateKey(parameters);
+        RSA::PublicKey publicKey(parameters);
 
         // Message
         string message = "RSA Encryption Schemes";
 
         // Signer object
-        RSASS<PSS, SHA1>::Signer signer( privateKey );
+        RSASS<PSS, SHA1>::Signer signer(privateKey);
 
         // Create signature space
         size_t length = signer.MaxSignatureLength();
-        SecByteBlock signature( length );
+        SecByteBlock signature(length);
 
         // Sign message
-        signer.SignMessage( rng, (const byte*) message.c_str(),
-            message.length(), signature );
+        signer.SignMessage(rng, (const byte*)message.c_str(),
+            message.length(), signature);
 
         // Verifier object
-        RSASS<PSS, SHA1>::Verifier verifier( publicKey );
+        RSASS<PSS, SHA1>::Verifier verifier(publicKey);
 
         // Verify
-        bool result = verifier.VerifyMessage( (const byte*)message.c_str(),
-            message.length(), signature, signature.size() );
+        bool result = verifier.VerifyMessage((const byte*)message.c_str(),
+            message.length(), signature, signature.size());
 
         // Result
-        if( true == result ) {
+        if (true == result) {
             cout << "Signature on message verified" << endl;
-        } else {
+        }
+        else {
             cout << "Message verification failed" << endl;
         }
 
     } // try
 
-    catch( CryptoPP::Exception& e ) {
+    catch (CryptoPP::Exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
 
     return 0;
 }
 
-void SaveKey( const RSA::PublicKey& PublicKey, const string& filename )
+void SaveKey(const RSA::PublicKey& PublicKey, const string& filename)
 {
     // DER Encode Key - X.509 key format
     PublicKey.Save(
-        FileSink( filename.c_str(), true /*binary*/ ).Ref()
+        FileSink(filename.c_str(), true /*binary*/).Ref()
     );
 }
 
-void SaveKey( const RSA::PrivateKey& PrivateKey, const string& filename )
+void SaveKey(const RSA::PrivateKey& PrivateKey, const string& filename)
 {
     // DER Encode Key - PKCS #8 key format
     PrivateKey.Save(
-        FileSink( filename.c_str(), true /*binary*/ ).Ref()
+        FileSink(filename.c_str(), true /*binary*/).Ref()
     );
 }
 
-void LoadKey( const string& filename, RSA::PublicKey& PublicKey )
+void LoadKey(const string& filename, RSA::PublicKey& PublicKey)
 {
     // DER Encode Key - X.509 key format
     PublicKey.Load(
-        FileSource( filename.c_str(), true, NULL, true /*binary*/ ).Ref()
+        FileSource(filename.c_str(), true, NULL, true /*binary*/).Ref()
     );
 }
 
-void LoadKey( const string& filename, RSA::PrivateKey& PrivateKey )
+void LoadKey(const string& filename, RSA::PrivateKey& PrivateKey)
 {
     // DER Encode Key - PKCS #8 key format
     PrivateKey.Load(
-        FileSource( filename.c_str(), true, NULL, true /*binary*/ ).Ref()
+        FileSource(filename.c_str(), true, NULL, true /*binary*/).Ref()
     );
 }
