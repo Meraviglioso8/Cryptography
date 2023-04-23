@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
 	decrypted_file << decrypted_message;
 	decrypted_file.close();
 
-	std::cout << "Running..." << std::endl;
+	std::cout << "Running hybrid RSA-AES ..." << std::endl;
 
 	//Benchmark
 
@@ -228,11 +228,7 @@ int main(int argc, char* argv[])
 		{
 			blocks *= 2;
 			for (; i < blocks; i++)
-				StringSource(encrypted_key_iv, true,
-					new PK_DecryptorFilter(rng, decryptor,
-						new StringSink(decrypted_key_iv)
-					)
-				);
+				aes_encryptor.SetKeyWithIV(aes_key, sizeof(aes_key), aes_iv);
 			elapsedTimeInSeconds = timer.ElapsedTimeAsDouble();
 		} while (elapsedTimeInSeconds < runTimeInSeconds);
 
@@ -273,7 +269,7 @@ int main(int argc, char* argv[])
 		const double mbs = bytes / elapsedTimeInSeconds / 1024 / 1024;
 		const double cpb = elapsedTimeInSeconds * cpuFreq / bytes;
 
-		std::cout << decryptor.AlgorithmName() << " plaintext encrypt benchmarks..." << std::endl;
+		std::cout << aes_encryptor.AlgorithmName() << " plaintext encrypt benchmarks..." << std::endl;
 		std::cout << "  " << ghz << " GHz cpu frequency" << std::endl;
 		std::cout << "  " << cpb << " cycles per byte (cpb)" << std::endl;
 		std::cout << "  " << mbs << " MiB per second (MiB)" << std::endl;
@@ -293,11 +289,6 @@ int main(int argc, char* argv[])
 			blocks *= 2;
 			for (; i < blocks; i++)
 				aes_decryptor.SetKeyWithIV((byte*)aes_key_str, AES::DEFAULT_KEYLENGTH, (byte*)aes_iv_str);
-				StringSource(encrypted_message.substr(encrypted_key_iv.size()), true,
-					new StreamTransformationFilter(aes_decryptor,
-						new StringSink(decrypted_message)
-					)
-				);
 			elapsedTimeInSeconds = timer.ElapsedTimeAsDouble();
 		} while (elapsedTimeInSeconds < runTimeInSeconds);
 
@@ -306,7 +297,7 @@ int main(int argc, char* argv[])
 		const double mbs = bytes / elapsedTimeInSeconds / 1024 / 1024;
 		const double cpb = elapsedTimeInSeconds * cpuFreq / bytes;
 
-		std::cout << decryptor.AlgorithmName() << " plaintext decrypt benchmarks..." << std::endl;
+		std::cout << aes_decryptor.AlgorithmName() << " plaintext decrypt benchmarks..." << std::endl;
 		std::cout << "  " << ghz << " GHz cpu frequency" << std::endl;
 		std::cout << "  " << cpb << " cycles per byte (cpb)" << std::endl;
 		std::cout << "  " << mbs << " MiB per second (MiB)" << std::endl;
@@ -316,6 +307,7 @@ int main(int argc, char* argv[])
 		std::cerr << ex.what() << std::endl;
 	}
 
+	std::cin.get();
 	
 
 	return 0;
