@@ -137,14 +137,13 @@ int main(int argc, char* argv[])
         recovered.resize(result.messageLength);
 
         // SecByteBlock is overloaded for proper results below
-        // Compare recovered to original
         std::string recoveredText((const char*)recovered.data(), recovered.size());
         // Convert recovered text to UTF-16
         std::wstring recoveredTextUtf16 = utf16conv.from_bytes(recoveredText);
 
         // Print recovered text to console
         std::cout << "Recovered plain text : " << recoveredText << std::endl;
-
+        // Compare recovered to original
         if (utf16myPlaintext == recoveredTextUtf16)
             cout << "Decryption succeeded" << endl;
         else
@@ -185,6 +184,7 @@ int main(int argc, char* argv[])
         }
 
 
+        timer.StartTimer();
         //benchmark decryption
         try
         {
