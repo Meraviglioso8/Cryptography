@@ -3,38 +3,27 @@ from Crypto.Signature.pkcs1_15 import PKCS115_SigScheme
 from Crypto.Hash import SHA256
 import binascii
 # pseudo code for a transmission session
-# DEMO SENDER MODULE
+# SENDER MODULE
 # ABOUT SENDING KEY FILE FROM SENDER
-		# Store the hash as a file named "message.dd" (configured in sender settings)
-
-            #sha_hash = self.get_sha256_hash(hash)
-            #filename = self.settings["hashFile"]
-            #Sender.make_directory(filename)
-            #Sender.write_text_file(filename, sha_hash.hexdigest().upper())
+		# Store the hash as a file 
+            #sha_hash = get_sha256_hash(hash)
 
         # Encrypt the hash with senders private key, call it the digital signature
-		# Write the digital signature (in base-16) to the log file. (used base-64)
-        # Store the digital signature as a file named "message.ds-msg"
+		# Write the digital signature into to the message file. 
+        # Store the digital signature as a file 
 
-            #digital_sig = self.get_rsa_signature(hash, key_pair)
-            #filename = self.settings["signatureFile"]
-            #Sender.make_directory(filename)
-            #log.info("Writing digital signature to file {}".format(filename))
+            #digital_sig = get_rsa_signature(hash, key_pair)
             #Sender.write_text_file(filename, digital_sig)
 
-        # Tell receiver ready to transmit and wait for an 'ack'
-            #self.send_message("Ready to send public key")
-            #response = self.receive_message()
-
         # Transmit publicKey
-            #pub_file = self.settings["pubKey"]
-            #self.send_file(pub_file)
+            #send_file(pub_file)
 
         # Wait for confirmation that key received
-             #self.receive_message()
+             #receive_message()
 
-# DEMO RECEIVER MODULE
-# ABOUT RECEIVING KEY
+
+# RECEIVER MODULE
+# ABOUT RECEIVING KEY AND CHECKING VALIDATION
 
         # Wait for sender to msg that public key is ready to be sent, and then acknowledge
             #print("Waiting for sender to get public key ready...")
@@ -48,13 +37,26 @@ import binascii
         # Verify that calculated hash matches the digital signature that was sent
             #self.receive_message()
             #log.info("Verifying that signature matches calculated hash...")
-            #cypher = PKCS1_v1_5.new(pub_key)
-            #is_match = cypher.verify(sha_hash, dig_sig_as_bin_str)
+            #cipher = PKCS1_v1_5.new(pub_key)
+            #is_match = cipher.verify(sha_hash, dig_sig_as_bin_str)
             #if is_match:
                 #self.send_message("valid")
             #else:
                 #self.send_message('invalid')
        
+#KEYRELATED MODULE
+        # generate RSA key (contains both public and private data)
+             #rsa_key = kg.generate_rsa_key_pair()
+
+        # write key to file (PEM_FILE)
+            # write_rsa_keys_to_file(cool_file.pem)
+
+        #read key from file (PEM_FILE)
+            # import_rsa_key_from_file(cool_file.pem)
+
+#PEM_FILE: a container format that may just include the public certificate or the entire certificate chain 
+#(private key, public key, root certificates): Private Key. Server Certificate (crt, puplic key) 
+#(optional) Intermediate CA and/or bundles if signed by a 3rd party.
 
 # Generate 2048-bit RSA key pair (private + public key)
 key = RSA.generate(2048)
