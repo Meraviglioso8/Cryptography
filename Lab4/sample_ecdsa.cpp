@@ -1,7 +1,7 @@
 // ECDSA.KeyGen.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
+//#include "stdafx.h"
 
 #include <assert.h>
 
@@ -240,7 +240,7 @@ bool VerifyMessage( const ECDSA<ECP, SHA1>::PublicKey& key, const string& messag
     StringSource( signature+message, true,
         new SignatureVerificationFilter(
             ECDSA<ECP,SHA1>::Verifier(key),
-            new ArraySink( (byte*)&result, sizeof(result) )
+            new ArraySink( (CryptoPP::byte*)&result, sizeof(result) )
         ) // SignatureVerificationFilter
     );
 
