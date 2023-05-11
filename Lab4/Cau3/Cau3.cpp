@@ -80,15 +80,19 @@ int main(int argc, char* argv[])
     ECDSA<ECP, SHA1>::PublicKey publicKey;
     
     /////////////////////////////////////////////
-    // Generate Keys
-    result = GeneratePrivateKey( CryptoPP::ASN1::secp160r1(), privateKey );
-    assert( true == result );
-    if( !result ) { return -1; }
+    //// Generate Keys
+    //result = GeneratePrivateKey( CryptoPP::ASN1::secp160r1(), privateKey );
+    //assert( true == result );
+    //if( !result ) { return -1; }
 
-    result = GeneratePublicKey( privateKey, publicKey );
-    assert( true == result );
-    if( !result ) { return -2; }
+    //result = GeneratePublicKey( privateKey, publicKey );
+    //assert( true == result );
+    //if( !result ) { return -2; }
     
+    // Load key in PKCS#9 and X.509 format     
+    LoadPrivateKey("D:/ec.private.key", privateKey);
+    LoadPublicKey("D:/ec.public.key", publicKey);
+
     /////////////////////////////////////////////
     // Print Domain Parameters and Keys   
     PrintDomainParameters( publicKey );
@@ -101,9 +105,7 @@ int main(int argc, char* argv[])
     //SavePublicKey( "ec.public.key", publicKey );
     
     /////////////////////////////////////////////
-    // Load key in PKCS#9 and X.509 format     
-    //LoadPrivateKey( "ec.private.key", privateKey );
-    //LoadPublicKey( "ec.public.key", publicKey );
+    
 
     /////////////////////////////////////////////
     // Print Domain Parameters and Keys    
