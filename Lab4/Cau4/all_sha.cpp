@@ -344,7 +344,5 @@ int main()
         default:
         cout<<"Invalid option";
         break;
-
-
     }
 }
