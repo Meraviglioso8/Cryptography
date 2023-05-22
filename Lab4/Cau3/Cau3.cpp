@@ -42,8 +42,8 @@ using CryptoPP::ECP;
 using CryptoPP::DL_GroupParameters_EC;
 
 #if _MSC_VER <= 1200 // VS 6.0
-using CryptoPP::ECDSA<ECP, SHA1>;
-using CryptoPP::DL_GroupParameters_EC<ECP>;
+//using CryptoPP::ECDSA<ECP, SHA1>;
+//using CryptoPP::DL_GroupParameters_EC<ECP>;
 #endif
 
 #include "oids.h"
